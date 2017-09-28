@@ -37,11 +37,12 @@ namespace nfd {
 namespace fw {
 
 const Name
-  RandomLoadBalancerStrategy::STRATEGY_NAME("ndn:/localhost/nfd/strategy/random-load-balancer");
+  RandomLoadBalancerStrategy::STRATEGY_NAME("/localhost/nfd/strategy/random-load-balancer");
 
 RandomLoadBalancerStrategy::RandomLoadBalancerStrategy(Forwarder& forwarder, const Name& name)
-  : Strategy(forwarder, name)
+  : Strategy(forwarder)
 {
+  this->setInstanceName(makeInstanceName(name, getStrategyName()));
 }
 
 RandomLoadBalancerStrategy::~RandomLoadBalancerStrategy()
@@ -95,6 +96,13 @@ RandomLoadBalancerStrategy::afterReceiveInterest(const Face& inFace, const Inter
   } while (!canForwardToNextHop(inFace, pitEntry, *selected));
 
   this->sendInterest(pitEntry, selected->getFace(), interest);
+}
+
+const Name&
+RandomLoadBalancerStrategy::getStrategyName()
+{
+  static Name strategyName("/localhost/nfd/strategy/random-load-balancer/%FD%01");
+  return strategyName;
 }
 
 } // namespace fw

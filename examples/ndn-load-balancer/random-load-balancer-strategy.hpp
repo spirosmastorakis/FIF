@@ -44,6 +44,9 @@ public:
   afterReceiveInterest(const Face& inFace, const Interest& interest,
                        const shared_ptr<pit::Entry>& pitEntry) override;
 
+  static const Name&
+  getStrategyName();
+
 public:
   static const Name STRATEGY_NAME;
 

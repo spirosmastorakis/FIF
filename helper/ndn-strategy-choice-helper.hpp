@@ -116,11 +116,8 @@ StrategyChoiceHelper::Install(Ptr<Node> node, const Name& namePrefix)
   NS_ASSERT(l3Protocol != nullptr);
   NS_ASSERT(l3Protocol->getForwarder() != nullptr);
 
-  nfd::Forwarder& forwarder = *l3Protocol->getForwarder();
-  nfd::StrategyChoice& strategyChoice = forwarder.getStrategyChoice();
-
-  if (!strategyChoice.hasStrategy(Strategy::STRATEGY_NAME)) {
-    strategyChoice.install(make_unique<Strategy>(ref(forwarder)));
+  if (!Strategy::canCreate(Strategy::STRATEGY_NAME)) {
+    Strategy::template registerType<Strategy>();
   }
 
   Install(node, namePrefix, Strategy::STRATEGY_NAME);
