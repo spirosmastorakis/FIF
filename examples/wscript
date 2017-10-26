@@ -14,4 +14,6 @@ def build(bld):
         name = str(i)[:-len(".cpp")]
         obj = bld.create_ns3_program(name, all_modules)
         obj.source = [i] + bld.path.ant_glob(['%s/**/*.cpp' % name])
-
+        obj.includes = [obj.includes, '/Users/spyros/tensorflow/bazel-tensorflow', '/usr/local/lib/python2.7/site-packages/tensorflow/include', '/Users/spyros/Downloads/word2vec/trunk']
+        obj.libpath = '/Users/spyros/Downloads/word2vec/trunk'
+        obj.uselib = 'distance'

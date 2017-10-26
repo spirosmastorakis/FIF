@@ -74,7 +74,7 @@ RandomLoadBalancerStrategy::afterReceiveInterest(const Face& inFace, const Inter
     return;
   }
 
-  const fib::Entry& fibEntry = this->lookupFib(*pitEntry);
+  const fib::Entry& fibEntry = this->lookupFib(*pitEntry, nullptr);
   const fib::NextHopList& nexthops = fibEntry.getNextHops();
 
   // Ensure there is at least 1 Face is available for forwarding

@@ -77,7 +77,7 @@ public:
    * @brief Actually send packet
    */
   void
-  SendPacket();
+  SendPacket(shared_ptr<Name> alternativeName = nullptr);
 
   /**
    * @brief An event that is fired just before an Interest packet is actually send out (send is

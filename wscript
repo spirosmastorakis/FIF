@@ -128,7 +128,7 @@ def build(bld):
     module.module = 'ndnSIM'
     module.features += ' ns3fullmoduleheaders ndncxxheaders'
     module.use += ['version-ndn-cxx', 'version-NFD', 'BOOST', 'SQLITE3', 'RT', 'PTHREAD', 'OPENSSL']
-    module.includes = ['../..', '../../ns3/ndnSIM/NFD', './NFD/core', './NFD/daemon', './NFD/rib', '../../ns3/ndnSIM', '../../ns3/ndnSIM/ndn-cxx']
+    module.includes = ['../..', '../../ns3/ndnSIM/NFD', './NFD/core', './NFD/daemon', './NFD/rib', '../../ns3/ndnSIM', '../../ns3/ndnSIM/ndn-cxx', '/Users/spyros/tensorflow/bazel-tensorflow', '/usr/local/lib/python2.7/site-packages/tensorflow/include', '/Users/spyros/Downloads/word2vec/trunk']
     module.export_includes = ['../../ns3/ndnSIM/NFD', './NFD/core', './NFD/daemon', './NFD/rib', '../../ns3/ndnSIM']
 
     headers = bld(features='ns3header')

@@ -156,7 +156,7 @@ Consumer::StopApplication() // Called at time specified by Stop
 }
 
 void
-Consumer::SendPacket()
+Consumer::SendPacket(shared_ptr<Name> alternativeName)
 {
   if (!m_active)
     return;
@@ -182,7 +182,11 @@ Consumer::SendPacket()
   }
 
   //
-  shared_ptr<Name> nameWithSequence = make_shared<Name>(m_interestName);
+  shared_ptr<Name> nameWithSequence = nullptr;
+  if (alternativeName == nullptr)
+    nameWithSequence = make_shared<Name>(m_interestName);
+  else
+    nameWithSequence = alternativeName;
   nameWithSequence->appendSequenceNumber(seq);
   //
 
@@ -264,15 +268,17 @@ Consumer::OnNack(shared_ptr<const lp::Nack> nack)
 void
 Consumer::OnTimeout(uint32_t sequenceNumber)
 {
-  NS_LOG_FUNCTION(sequenceNumber);
-  // std::cout << Simulator::Now () << ", TO: " << sequenceNumber << ", current RTO: " <<
-  // m_rtt->RetransmitTimeout ().ToDouble (Time::S) << "s\n";
+  // NS_LOG_FUNCTION(sequenceNumber);
+  // // std::cout << Simulator::Now () << ", TO: " << sequenceNumber << ", current RTO: " <<
+  // // m_rtt->RetransmitTimeout ().ToDouble (Time::S) << "s\n";
+  //
+  // m_rtt->IncreaseMultiplier(); // Double the next RTO
+  // m_rtt->SentSeq(SequenceNumber32(sequenceNumber),
+  //                1); // make sure to disable RTT calculation for this sample
+  // m_retxSeqs.insert(sequenceNumber);
+  // ScheduleNextPacket();
 
-  m_rtt->IncreaseMultiplier(); // Double the next RTO
-  m_rtt->SentSeq(SequenceNumber32(sequenceNumber),
-                 1); // make sure to disable RTT calculation for this sample
-  m_retxSeqs.insert(sequenceNumber);
-  ScheduleNextPacket();
+  // do nothing for now
 }
 
 void
