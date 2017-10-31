@@ -28,6 +28,8 @@
 
 #include <fstream>
 
+#include "ns3/ndnSIM/utils/mem-usage.hpp"
+
 namespace ns3 {
 
 /**
@@ -103,7 +105,7 @@ main(int argc, char* argv[])
   ndnHelper.InstallAll();
 
   // Choosing forwarding strategy
-  ndn::StrategyChoiceHelper::InstallAll("/prefix", "/localhost/nfd/strategy/fuzzy");
+  ndn::StrategyChoiceHelper::InstallAll("/prefix", "/localhost/nfd/strategy/best-route");
 
   // Installing global routing interface on all nodes
   ndn::GlobalRoutingHelper ndnGlobalRoutingHelper;

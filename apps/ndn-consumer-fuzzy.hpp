@@ -23,6 +23,7 @@
 #include "ns3/ndnSIM/model/ndn-common.hpp"
 
 #include "ndn-consumer.hpp"
+#include <fstream>
 
 namespace ns3 {
 namespace ndn {
@@ -79,7 +80,7 @@ protected:
   bool m_firstTime;
   Ptr<RandomVariableStream> m_random;
   std::string m_randomType;
-  char m_random_words_names[100][100];
+  char m_random_words_names[600][100];
   char m_filename[100];
   int m_nameIndex;
   int m_interestsSent;

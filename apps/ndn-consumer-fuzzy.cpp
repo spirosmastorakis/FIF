@@ -31,6 +31,8 @@
 
 #include "distance_lib.h"
 
+#include "ns3/ndnSIM/utils/mem-usage.hpp"
+
 NS_LOG_COMPONENT_DEFINE("ndn.ConsumerFuzzy");
 
 namespace ns3 {
@@ -59,7 +61,6 @@ ConsumerFuzzy::GetTypeId(void)
       .AddAttribute("MaxSeq", "Maximum sequence number to request",
                     IntegerValue(std::numeric_limits<uint32_t>::max()),
                     MakeIntegerAccessor(&ConsumerFuzzy::m_seqMax), MakeIntegerChecker<uint32_t>())
-
     ;
 
   return tid;
@@ -72,14 +73,23 @@ ConsumerFuzzy::ConsumerFuzzy()
   NS_LOG_FUNCTION_NOARGS();
   m_seqMax = std::numeric_limits<uint32_t>::max();
 
-  strcpy(m_filename, "/Users/spyros/Downloads/word2vec/trunk/vectors.bin");
-  get_random_words(m_filename, 100, m_random_words_names);
+  strcpy(m_filename, "names.txt");
+  std::ifstream ifs(m_filename);
+  if(ifs.fail()) {
+        std::cerr << "failed to open input file " << m_filename << std::endl;
+  }
+
+  int i = 0;
+  while(ifs >> m_random_words_names[i]) {
+    // std::cerr << "word number " << i << " is " << m_random_words_names[i]  << endl;
+    i++;
+  }
   m_nameIndex = 0;
 
   m_interestsSent = 0;
   m_dataReceived = 0;
 
-  Simulator::Schedule(Seconds(1.9), &ConsumerFuzzy::StopApplication, this);
+  Simulator::Schedule(Seconds(59.9), &ConsumerFuzzy::StopApplication, this);
 }
 
 ConsumerFuzzy::~ConsumerFuzzy()
@@ -149,6 +159,8 @@ ConsumerFuzzy::GetRandomize() const
 void
 ConsumerFuzzy::OnData(shared_ptr<const Data> data)
 {
+  double overhead = MemUsage::Get() / 1024.0 / 1024.0;
+  std::cerr << "Memory overhead: " << overhead << " MB" << std::endl;
   m_dataReceived++;
   Consumer::OnData(data);
 }
