@@ -216,15 +216,15 @@ int main (int argc, char *argv[])
 
   NS_LOG_UNCOND ("V2VTest Simulator");
   //NS_LOG_UNCOND (TF_Version());
-  char filename[100];
-  char word[100];
-  resultFormat results;
-  results.nResultsToReturn = 5;
-  strcpy(filename, "/Users/spyros/Downloads/word2vec/trunk/vectors.bin");
-  strcpy(word, "dog");
-  distance(filename, word, (void*)&results);
-
-  NS_LOG_UNCOND("Best match: " << results.resultsArray[1].resultValue);
+  // char filename[100];
+  // char word[100];
+  // resultFormat results;
+  // results.nResultsToReturn = 5;
+  // strcpy(filename, "/Users/spyros/Downloads/word2vec/trunk/vectors.bin");
+  // strcpy(word, "dog");
+  // distance(filename, word, (void*)&results);
+  //
+  // NS_LOG_UNCOND("Best match: " << results.resultsArray[1].resultValue);
 
   uint32_t numProducer = 1;
   int simulationEnd = 1;

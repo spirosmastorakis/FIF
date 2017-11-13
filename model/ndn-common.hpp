@@ -37,15 +37,6 @@
 
 #include "NFD/daemon/face/face.hpp"
 
-struct result {
-  char resultValue[100];
-};
-
-struct resultFormat {
-  int nResultsToReturn;
-  result resultsArray[5];
-};
-
 namespace nfd {
 }
 

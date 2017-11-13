@@ -187,7 +187,7 @@ Consumer::SendPacket(shared_ptr<Name> alternativeName)
     nameWithSequence = make_shared<Name>(m_interestName);
   else
     nameWithSequence = alternativeName;
-  nameWithSequence->appendSequenceNumber(seq);
+  //nameWithSequence->appendSequenceNumber(seq);
   //
 
   // shared_ptr<Interest> interest = make_shared<Interest> ();
@@ -225,8 +225,8 @@ Consumer::OnData(shared_ptr<const Data> data)
   // NS_LOG_INFO ("Received content object: " << boost::cref(*data));
 
   // This could be a problem......
-  uint32_t seq = data->getName().at(-1).toSequenceNumber();
-  NS_LOG_INFO("< DATA for " << seq);
+  //uint32_t seq = data->getName().at(-1).toSequenceNumber();
+  //NS_LOG_INFO("< DATA for " << seq);
 
   int hopCount = 0;
   auto hopCountTag = data->getTag<lp::HopCountTag>();
@@ -235,24 +235,24 @@ Consumer::OnData(shared_ptr<const Data> data)
   }
   NS_LOG_DEBUG("Hop count: " << hopCount);
 
-  SeqTimeoutsContainer::iterator entry = m_seqLastDelay.find(seq);
-  if (entry != m_seqLastDelay.end()) {
-    m_lastRetransmittedInterestDataDelay(this, seq, Simulator::Now() - entry->time, hopCount);
-  }
-
-  entry = m_seqFullDelay.find(seq);
-  if (entry != m_seqFullDelay.end()) {
-    m_firstInterestDataDelay(this, seq, Simulator::Now() - entry->time, m_seqRetxCounts[seq], hopCount);
-  }
-
-  m_seqRetxCounts.erase(seq);
-  m_seqFullDelay.erase(seq);
-  m_seqLastDelay.erase(seq);
-
-  m_seqTimeouts.erase(seq);
-  m_retxSeqs.erase(seq);
-
-  m_rtt->AckSeq(SequenceNumber32(seq));
+  // SeqTimeoutsContainer::iterator entry = m_seqLastDelay.find(seq);
+  // if (entry != m_seqLastDelay.end()) {
+  //   m_lastRetransmittedInterestDataDelay(this, seq, Simulator::Now() - entry->time, hopCount);
+  // }
+  //
+  // entry = m_seqFullDelay.find(seq);
+  // if (entry != m_seqFullDelay.end()) {
+  //   m_firstInterestDataDelay(this, seq, Simulator::Now() - entry->time, m_seqRetxCounts[seq], hopCount);
+  // }
+  //
+  // m_seqRetxCounts.erase(seq);
+  // m_seqFullDelay.erase(seq);
+  // m_seqLastDelay.erase(seq);
+  //
+  // m_seqTimeouts.erase(seq);
+  // m_retxSeqs.erase(seq);
+  //
+  // m_rtt->AckSeq(SequenceNumber32(seq));
 }
 
 void

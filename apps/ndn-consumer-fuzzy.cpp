@@ -119,14 +119,14 @@ ConsumerFuzzy::ScheduleNextPacket()
 
   if (m_firstTime) {
     m_sendEvent = Simulator::Schedule(Seconds(0.0), &Consumer::SendPacket, this,
-                                      make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex])));
+                                      make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex/2])));
     m_firstTime = false;
   }
   else if (!m_sendEvent.IsRunning())
     m_sendEvent = Simulator::Schedule((m_random == 0) ? Seconds(1.0 / m_frequency)
                                                       : Seconds(m_random->GetValue()),
                                       &Consumer::SendPacket, this,
-                                      make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex])));
+                                      make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex/2])));
   m_nameIndex++;
   m_interestsSent++;
 }

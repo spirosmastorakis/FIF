@@ -60,7 +60,7 @@ main(int argc, char* argv[])
 
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
-  int fibSize = 0;
+  int fibSize = 2400;
   cmd.AddValue("fibSize", "Number of random FIB entries", fibSize);
   cmd.Parse(argc, argv);
 
