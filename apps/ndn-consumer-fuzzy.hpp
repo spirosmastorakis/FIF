@@ -75,16 +75,21 @@ protected:
   void
   StopApplication();
 
+  void
+  SetPrefixFileName(std::string fileName);
+
 protected:
   double m_frequency; // Frequency of interest packets (in hertz)
   bool m_firstTime;
   Ptr<RandomVariableStream> m_random;
   std::string m_randomType;
   char m_random_words_names[600][100];
-  char m_filename[100];
+  std::string m_filename;
   int m_nameIndex;
   int m_interestsSent;
   int m_dataReceived;
+  bool m_warmUpApp;
+  bool m_memoryLogs;
 };
 
 } // namespace ndn

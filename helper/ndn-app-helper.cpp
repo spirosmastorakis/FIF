@@ -45,6 +45,12 @@ AppHelper::SetPrefix(const std::string& prefix)
 }
 
 void
+AppHelper::SetFilename(const std::string& filename)
+{
+  m_factory.Set("FileName", StringValue(filename));
+}
+
+void
 AppHelper::SetAttribute(std::string name, const AttributeValue& value)
 {
   m_factory.Set(name, value);

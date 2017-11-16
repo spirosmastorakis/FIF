@@ -61,9 +61,24 @@ ConsumerFuzzy::GetTypeId(void)
       .AddAttribute("MaxSeq", "Maximum sequence number to request",
                     IntegerValue(std::numeric_limits<uint32_t>::max()),
                     MakeIntegerAccessor(&ConsumerFuzzy::m_seqMax), MakeIntegerChecker<uint32_t>())
+
+      .AddAttribute("Filename", "Name of the file containing the prefixes to express", StringValue("/"),
+                    MakeStringAccessor(&ConsumerFuzzy::m_filename), MakeStringChecker())
+
+      .AddAttribute("WarmUpApp", "Is this app instance for cache warm-up?", BooleanValue(true),
+                    MakeBooleanAccessor(&ConsumerFuzzy::m_warmUpApp), MakeBooleanChecker())
+
+      .AddAttribute("MemoryLogs", "Is this app instance for cache warm-up?", BooleanValue(false),
+                    MakeBooleanAccessor(&ConsumerFuzzy::m_memoryLogs), MakeBooleanChecker())
     ;
 
   return tid;
+}
+
+void
+ConsumerFuzzy::SetPrefixFileName(std::string fileName)
+{
+  m_filename = fileName;
 }
 
 ConsumerFuzzy::ConsumerFuzzy()
@@ -73,23 +88,10 @@ ConsumerFuzzy::ConsumerFuzzy()
   NS_LOG_FUNCTION_NOARGS();
   m_seqMax = std::numeric_limits<uint32_t>::max();
 
-  strcpy(m_filename, "names.txt");
-  std::ifstream ifs(m_filename);
-  if(ifs.fail()) {
-        std::cerr << "failed to open input file " << m_filename << std::endl;
-  }
-
-  int i = 0;
-  while(ifs >> m_random_words_names[i]) {
-    // std::cerr << "word number " << i << " is " << m_random_words_names[i]  << endl;
-    i++;
-  }
   m_nameIndex = 0;
 
   m_interestsSent = 0;
   m_dataReceived = 0;
-
-  Simulator::Schedule(Seconds(59.9), &ConsumerFuzzy::StopApplication, this);
 }
 
 ConsumerFuzzy::~ConsumerFuzzy()
@@ -100,14 +102,28 @@ ConsumerFuzzy::~ConsumerFuzzy()
 void
 ConsumerFuzzy::StartApplication() // Called at time specified by Start
 {
+  // std::cerr << m_filename << std::endl;
+  std::ifstream ifs(m_filename);
+  if(ifs.fail()) {
+        std::cerr << "failed to open input file " << m_filename << std::endl;
+  }
+
+  int i = 0;
+  while(ifs >> m_random_words_names[i]) {
+    // std::cerr << "word number " << i << " is " << m_random_words_names[i]  << std::endl;
+    i++;
+  }
+
   Consumer::StartApplication();
 }
 
 void
 ConsumerFuzzy::StopApplication() // Called at time specified by Stop
 {
-  NS_LOG_UNCOND ("Interests sent: " << m_interestsSent);
-  NS_LOG_UNCOND ("Data received: " << m_dataReceived);
+  if (!m_warmUpApp){
+    NS_LOG_UNCOND ("Interests sent: " << m_interestsSent);
+    NS_LOG_UNCOND ("Data received: " << m_dataReceived);
+  }
   Consumer::StopApplication();
 }
 
@@ -119,14 +135,14 @@ ConsumerFuzzy::ScheduleNextPacket()
 
   if (m_firstTime) {
     m_sendEvent = Simulator::Schedule(Seconds(0.0), &Consumer::SendPacket, this,
-                                      make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex/2])));
+                                      make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex])));
     m_firstTime = false;
   }
   else if (!m_sendEvent.IsRunning())
     m_sendEvent = Simulator::Schedule((m_random == 0) ? Seconds(1.0 / m_frequency)
                                                       : Seconds(m_random->GetValue()),
                                       &Consumer::SendPacket, this,
-                                      make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex/2])));
+                                      make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex])));
   m_nameIndex++;
   m_interestsSent++;
 }
@@ -160,7 +176,8 @@ void
 ConsumerFuzzy::OnData(shared_ptr<const Data> data)
 {
   double overhead = MemUsage::Get() / 1024.0 / 1024.0;
-  std::cerr << "Memory overhead: " << overhead << " MB" << std::endl;
+  if (m_memoryLogs)
+    std::cerr << "Memory overhead: " << overhead << " MB" << std::endl;
   m_dataReceived++;
   Consumer::OnData(data);
 }

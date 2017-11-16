@@ -116,6 +116,7 @@ main(int argc, char* argv[])
   // Consumer will request /prefix/0, /prefix/1, ...
   consumerHelper.SetPrefix("/prefix/dog");
   consumerHelper.SetAttribute("Frequency", StringValue("10")); // 10 interests a second
+  consumerHelper.SetFilename("names.txt"); // file name for prefixes
   consumerHelper.Install(nodes.Get(0));                        // first node
 
   // Producer

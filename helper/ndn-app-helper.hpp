@@ -51,6 +51,9 @@ public:
   void
   SetPrefix(const std::string& prefix);
 
+  void
+  SetFilename(const std::string& filename);
+
   /**
    * \brief Helper function used to set the underlying application attributes.
    *
