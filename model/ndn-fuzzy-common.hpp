@@ -1,7 +1,7 @@
 #ifndef NDNSIM_NDN_FUZZY_COMMON_H
 #define NDNSIM_NDN_FUZZY_COMMON_H
 
-#define NUM_OF_RESULTS 10
+#define NUM_OF_RESULTS 5
 #define COMP_INDEX_FUZZY 1
 #define THRESHOLD 0.4
 
@@ -12,6 +12,7 @@ struct result {
 struct resultFormat {
   int nResultsToReturn;
   result resultsArray[NUM_OF_RESULTS];
+  float similarity[NUM_OF_RESULTS];
 };
 
 struct initStruct {

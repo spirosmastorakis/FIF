@@ -51,6 +51,8 @@ StackHelper::StackHelper()
   , m_isStrategyChoiceManagerDisabled(false)
   , m_needSetDefaultRoutes(false)
   , m_maxCsSize(100)
+  , m_waitAndFwd(false)
+  , m_waitTime(0.2)
 {
   setCustomNdnCxxClocks();
 
@@ -206,6 +208,9 @@ StackHelper::Install(Ptr<Node> node) const
   else {
     ndn->setCsReplacementPolicy(m_csPolicyCreationFunc);
   }
+
+  if (m_waitAndFwd)
+    ndn->enableWaitAndFwd(m_waitTime);
 
   // Aggregate L3Protocol on node (must be after setting ndnSIM CS)
   node->AggregateObject(ndn);
@@ -424,6 +429,13 @@ void
 StackHelper::disableForwarderStatusManager()
 {
   m_isForwarderStatusManagerDisabled = true;
+}
+
+void
+StackHelper::enableWaitAndFwd(float waitTime)
+{
+  m_waitAndFwd = true;
+  m_waitTime = waitTime;
 }
 
 } // namespace ndn

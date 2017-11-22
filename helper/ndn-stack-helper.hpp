@@ -248,6 +248,9 @@ public:
   void
   disableForwarderStatusManager();
 
+  void
+  enableWaitAndFwd(float waitTime);
+
 private:
   shared_ptr<Face>
   DefaultNetDeviceCallback(Ptr<Node> node, Ptr<L3Protocol> ndn, Ptr<NetDevice> netDevice) const;
@@ -281,6 +284,8 @@ private:
 
   typedef std::list<std::pair<TypeId, FaceCreateCallback>> NetDeviceCallbackList;
   NetDeviceCallbackList m_netDeviceCallbacks;
+  bool m_waitAndFwd;
+  float m_waitTime;
 };
 
 } // namespace ndn

@@ -56,7 +56,7 @@ Consumer::GetTypeId(void)
 
       .AddAttribute("Prefix", "Name of the Interest", StringValue("/"),
                     MakeNameAccessor(&Consumer::m_interestName), MakeNameChecker())
-      .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("2s"),
+      .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("5s"),
                     MakeTimeAccessor(&Consumer::m_interestLifeTime), MakeTimeChecker())
 
       .AddAttribute("RetxTimer",
@@ -163,25 +163,27 @@ Consumer::SendPacket(shared_ptr<Name> alternativeName)
 
   NS_LOG_FUNCTION_NOARGS();
 
-  uint32_t seq = std::numeric_limits<uint32_t>::max(); // invalid
-
-  while (m_retxSeqs.size()) {
-    seq = *m_retxSeqs.begin();
-    m_retxSeqs.erase(m_retxSeqs.begin());
-    break;
-  }
-
-  if (seq == std::numeric_limits<uint32_t>::max()) {
-    if (m_seqMax != std::numeric_limits<uint32_t>::max()) {
-      if (m_seq >= m_seqMax) {
-        return; // we are totally done
-      }
-    }
-
-    seq = m_seq++;
-  }
-
+  // uint32_t seq = std::numeric_limits<uint32_t>::max(); // invalid
+  // //seq = 0;
   //
+  // while (m_retxSeqs.size()) {
+  //   seq = *m_retxSeqs.begin();
+  //   m_retxSeqs.erase(m_retxSeqs.begin());
+  //   break;
+  // }
+  //
+  // if (seq == std::numeric_limits<uint32_t>::max()) {
+  //   if (m_seqMax != std::numeric_limits<uint32_t>::max()) {
+  //     if (m_seq >= m_seqMax) {
+  //       return; // we are totally done
+  //     }
+  //   }
+  //
+  //   seq = m_seq++;
+  // }
+  // NS_LOG_INFO("> Here " << seq);
+  //
+  m_seq++;
   shared_ptr<Name> nameWithSequence = nullptr;
   if (alternativeName == nullptr)
     nameWithSequence = make_shared<Name>(m_interestName);
@@ -198,9 +200,9 @@ Consumer::SendPacket(shared_ptr<Name> alternativeName)
   interest->setInterestLifetime(interestLifeTime);
 
   // NS_LOG_INFO ("Requesting Interest: \n" << *interest);
-  NS_LOG_INFO("> Interest for " << seq);
+  NS_LOG_INFO("> Interest for " << m_seq);
 
-  WillSendOutInterest(seq);
+  WillSendOutInterest(m_seq);
 
   m_transmittedInterests(interest, this, m_face);
   m_appLink->onReceiveInterest(*interest);
@@ -218,7 +220,7 @@ Consumer::OnData(shared_ptr<const Data> data)
   if (!m_active)
     return;
 
-  App::OnData(data); // tracing inside
+  // App::OnData(data); // tracing inside
 
   NS_LOG_FUNCTION(this << data);
 
@@ -287,15 +289,15 @@ Consumer::WillSendOutInterest(uint32_t sequenceNumber)
   NS_LOG_DEBUG("Trying to add " << sequenceNumber << " with " << Simulator::Now() << ". already "
                                 << m_seqTimeouts.size() << " items");
 
-  m_seqTimeouts.insert(SeqTimeout(sequenceNumber, Simulator::Now()));
-  m_seqFullDelay.insert(SeqTimeout(sequenceNumber, Simulator::Now()));
-
-  m_seqLastDelay.erase(sequenceNumber);
-  m_seqLastDelay.insert(SeqTimeout(sequenceNumber, Simulator::Now()));
-
-  m_seqRetxCounts[sequenceNumber]++;
-
-  m_rtt->SentSeq(SequenceNumber32(sequenceNumber), 1);
+  // m_seqTimeouts.insert(SeqTimeout(sequenceNumber, Simulator::Now()));
+  // m_seqFullDelay.insert(SeqTimeout(sequenceNumber, Simulator::Now()));
+  //
+  // m_seqLastDelay.erase(sequenceNumber);
+  // m_seqLastDelay.insert(SeqTimeout(sequenceNumber, Simulator::Now()));
+  //
+  // m_seqRetxCounts[sequenceNumber]++;
+  //
+  // m_rtt->SentSeq(SequenceNumber32(sequenceNumber), 1);
 }
 
 } // namespace ndn

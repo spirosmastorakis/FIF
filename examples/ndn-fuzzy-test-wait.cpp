@@ -57,15 +57,17 @@ main(int argc, char* argv[])
 {
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
-  int fibSize = 0;
-  int simTime = 0;
+  int fibSize = 600;
+  int simTime = 40;
   int memLogs = 0;
+  float waitTime = 0.6;
   cmd.AddValue("fibSize", "Number of random FIB entries", fibSize);
   cmd.AddValue("simTime", "Simulation Time", simTime);
   cmd.AddValue("memLogs", "Memory Logs On", memLogs);
+  cmd.AddValue("waitTime", "Memory Logs On", waitTime);
   cmd.Parse(argc, argv);
 
-  NS_LOG_UNCOND ("Abilene Fuzzy");
+  NS_LOG_UNCOND ("Abilene Fuzzy - Wait And Fwd");
 
   // char filename[100];
   // strcpy(filename, "/Users/spyros/Downloads/word2vec/trunk/vectors.bin");
@@ -97,6 +99,8 @@ main(int argc, char* argv[])
 
   // Install NDN stack on all nodes
   ndn::StackHelper ndnHelper;
+  if (waitTime != 0)
+    ndnHelper.enableWaitAndFwd(waitTime);
   // ndnHelper.SetDefaultRoutes(true);
   ndnHelper.InstallAll();
 
@@ -113,25 +117,37 @@ main(int argc, char* argv[])
   ndn::AppHelper consumerHelper1("ns3::ndn::ConsumerFuzzy");
   consumerHelper1.SetPrefix("/prefix/dog");
   consumerHelper1.SetAttribute("Filename", StringValue("names1.txt")); // file name for prefixes
-  consumerHelper1.SetAttribute("Frequency", StringValue("20")); // 10 interests a second
+  consumerHelper1.SetAttribute("Frequency", StringValue("20")); // 20 interests a second
   consumerHelper1.SetAttribute("WarmUpApp", BooleanValue(false));
   if (memLogs == 1)
     consumerHelper1.SetAttribute("MemoryLogs", BooleanValue(true));
   ApplicationContainer consumer1 = consumerHelper1.Install(Names::Find<Node>("Seattle"));
-  consumer1.Start(Seconds(10));
-  consumer1.Stop(Seconds(simTime - 0.01));
+  consumer1.Start(Seconds(10.0));
+  consumer1.Stop(Seconds(simTime + waitTime - 0.01));
 
   // Second Consumer
-  ndn::AppHelper consumerHelper2("ns3::ndn::ConsumerFuzzy");
-  consumerHelper2.SetPrefix("/prefix/dog");
-  consumerHelper2.SetAttribute("Frequency", StringValue("20")); // 10 interests a second
-  consumerHelper2.SetAttribute("Filename", StringValue("names2.txt")); // file name for prefixes
-  consumerHelper2.SetAttribute("WarmUpApp", BooleanValue(false));
+  // ndn::AppHelper consumerHelper2("ns3::ndn::ConsumerFuzzy");
+  // consumerHelper2.SetPrefix("/prefix/dog");
+  // consumerHelper2.SetAttribute("Frequency", StringValue("20")); // 20 interests a second
+  // consumerHelper2.SetAttribute("Filename", StringValue("names2.txt")); // file name for prefixes
+  // consumerHelper2.SetAttribute("WarmUpApp", BooleanValue(false));
+  // if (memLogs == 1)
+  //   consumerHelper2.SetAttribute("MemoryLogs", BooleanValue(true));
+  // ApplicationContainer consumer2 = consumerHelper2.Install(Names::Find<Node>("Sunnyvale"));
+  // consumer2.Start(Seconds(10.0));
+  // consumer2.Stop(Seconds(simTime + waitTime - 0.01));
+
+  // Third Consumer
+  ndn::AppHelper consumerHelper3("ns3::ndn::ConsumerFuzzy");
+  consumerHelper3.SetPrefix("/prefix/dog");
+  consumerHelper3.SetAttribute("Frequency", StringValue("20")); // 20 interests a second
+  consumerHelper3.SetAttribute("Filename", StringValue("names1.txt")); // file name for prefixes
+  consumerHelper3.SetAttribute("WarmUpApp", BooleanValue(false));
   if (memLogs == 1)
-    consumerHelper2.SetAttribute("MemoryLogs", BooleanValue(true));
-  ApplicationContainer consumer2 = consumerHelper2.Install(Names::Find<Node>("Seattle"));
-  consumer2.Start(Seconds(10));
-  consumer2.Stop(Seconds(simTime - 0.01));
+    consumerHelper3.SetAttribute("MemoryLogs", BooleanValue(true));
+  ApplicationContainer consumer3 = consumerHelper3.Install(Names::Find<Node>("Denver"));
+  consumer3.Start(Seconds(10.0 + 0.1));
+  consumer3.Stop(Seconds(simTime + waitTime - 0.01));
 
   // Producer
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
@@ -146,15 +162,15 @@ main(int argc, char* argv[])
   consumerHelperWarmup1.SetAttribute("Frequency", StringValue("30")); // 30 interests a second
   consumerHelperWarmup1.SetAttribute("Filename", StringValue("names-warmup1.txt")); // file name for prefixes
   ApplicationContainer consumerWarmup1 = consumerHelperWarmup1.Install(Names::Find<Node>("Seattle"));
-  consumerWarmup1.Stop(Seconds(10)); // stop consumers at 10s
-
-  // Warming up caches along the data retrieval path
+  consumerWarmup1.Stop(Seconds(10.0)); // stop consumers at 10s
+  //
+  // // Warming up caches along the data retrieval path
   ndn::AppHelper consumerHelperWarmup2("ns3::ndn::ConsumerFuzzy");
   consumerHelperWarmup2.SetPrefix("/prefix/dog");
   consumerHelperWarmup2.SetAttribute("Frequency", StringValue("30")); // 30 interests a second
   consumerHelperWarmup2.SetAttribute("Filename", StringValue("names-warmup2.txt")); // file name for prefixes
-  ApplicationContainer consumerWarmup2 = consumerHelperWarmup2.Install(Names::Find<Node>("Seattle"));
-  consumerWarmup2.Stop(Seconds(10)); // stop consumers at 10s
+  ApplicationContainer consumerWarmup2 = consumerHelperWarmup2.Install(Names::Find<Node>("Sunnyvale"));
+  consumerWarmup2.Stop(Seconds(10.0)); // stop consumers at 10s
 
   // Warming up caches along the data retrieval path
   // ndn::AppHelper consumerHelperWarmup3("ns3::ndn::ConsumerFuzzy");
@@ -181,7 +197,7 @@ main(int argc, char* argv[])
   // Calculate and install FIBs
   ndn::GlobalRoutingHelper::CalculateRoutes();
 
-  Simulator::Stop(Seconds(simTime));
+  Simulator::Stop(Seconds(simTime + waitTime));
 
   Simulator::Run();
   Simulator::Destroy();

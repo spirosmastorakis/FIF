@@ -164,6 +164,9 @@ public:
   void
   setCsReplacementPolicy(const PolicyCreationCallback& policy);
 
+  void
+  enableWaitAndFwd(float waitTime);
+
 public: // Workaround for python bindings
   static Ptr<L3Protocol>
   getL3Protocol(Ptr<Object> node);
@@ -218,6 +221,9 @@ private:
 
   TracedCallback<const nfd::pit::Entry&, const Face&/*in face*/, const Data&> m_satisfiedInterests;
   TracedCallback<const nfd::pit::Entry&> m_timedOutInterests;
+
+  bool m_waitAndFwd;
+  float m_waitTime;
 };
 
 } // namespace ndn

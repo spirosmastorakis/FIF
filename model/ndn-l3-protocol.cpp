@@ -194,6 +194,7 @@ private:
 
 L3Protocol::L3Protocol()
   : m_impl(new Impl())
+  , m_waitAndFwd(false)
 {
   NS_LOG_FUNCTION(this);
 }
@@ -325,6 +326,10 @@ L3Protocol::initializeManagement()
   auto entry = forwarder->getFib().insert(topPrefix).first;
   entry->addNextHop(*(m_impl->m_internalFace), 0);
   m_impl->m_dispatcher->addTopPrefix(topPrefix, false);
+
+  // enable Wait And Fwd Approach
+  if (m_waitAndFwd)
+    forwarder->enableFwdAndWait(m_waitTime);
 }
 
 void
@@ -506,6 +511,13 @@ L3Protocol::getL3Protocol(Ptr<Object> node)
   Ptr<L3Protocol> retval = node->GetObject<L3Protocol>();
   NS_ASSERT_MSG(retval != nullptr, "L3Protocol is not aggregated on this object");
   return retval;
+}
+
+void
+L3Protocol::enableWaitAndFwd(float waitTime)
+{
+  m_waitAndFwd = true;
+  m_waitTime = waitTime;
 }
 
 } // namespace ndn
