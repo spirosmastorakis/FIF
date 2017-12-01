@@ -184,6 +184,7 @@ Consumer::SendPacket(shared_ptr<Name> alternativeName)
   // NS_LOG_INFO("> Here " << seq);
   //
   m_seq++;
+  // NS_LOG_INFO("Alternative Name: " << *alternativeName);
   shared_ptr<Name> nameWithSequence = nullptr;
   if (alternativeName == nullptr)
     nameWithSequence = make_shared<Name>(m_interestName);
@@ -194,10 +195,15 @@ Consumer::SendPacket(shared_ptr<Name> alternativeName)
 
   // shared_ptr<Interest> interest = make_shared<Interest> ();
   shared_ptr<Interest> interest = make_shared<Interest>();
+  // NS_LOG_INFO("After Interest creation");
+  //interest->setNonce(std::rand() % std::numeric_limits<uint32_t>::max());
   interest->setNonce(m_rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
+  // NS_LOG_INFO("Set Nonce");
   interest->setName(*nameWithSequence);
+  // NS_LOG_INFO("Set Name");
   time::milliseconds interestLifeTime(m_interestLifeTime.GetMilliSeconds());
   interest->setInterestLifetime(interestLifeTime);
+  // NS_LOG_INFO("Set LifeTime");
 
   // NS_LOG_INFO ("Requesting Interest: \n" << *interest);
   NS_LOG_INFO("> Interest for " << m_seq);

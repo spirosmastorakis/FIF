@@ -57,8 +57,8 @@ main(int argc, char* argv[])
 {
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
-  int fibSize = 0;
-  int simTime = 0;
+  int fibSize = 600;
+  int simTime = 70;
   int memLogs = 0;
   cmd.AddValue("fibSize", "Number of random FIB entries", fibSize);
   cmd.AddValue("simTime", "Simulation Time", simTime);
@@ -129,7 +129,7 @@ main(int argc, char* argv[])
   consumerHelper2.SetAttribute("WarmUpApp", BooleanValue(false));
   if (memLogs == 1)
     consumerHelper2.SetAttribute("MemoryLogs", BooleanValue(true));
-  ApplicationContainer consumer2 = consumerHelper2.Install(Names::Find<Node>("Seattle"));
+  ApplicationContainer consumer2 = consumerHelper2.Install(Names::Find<Node>("Denver"));
   consumer2.Start(Seconds(10));
   consumer2.Stop(Seconds(simTime - 0.01));
 

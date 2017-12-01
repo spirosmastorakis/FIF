@@ -60,7 +60,7 @@ main(int argc, char* argv[])
   int fibSize = 600;
   int simTime = 40;
   int memLogs = 0;
-  float waitTime = 0.6;
+  float waitTime = 0.3;
   cmd.AddValue("fibSize", "Number of random FIB entries", fibSize);
   cmd.AddValue("simTime", "Simulation Time", simTime);
   cmd.AddValue("memLogs", "Memory Logs On", memLogs);
@@ -119,6 +119,8 @@ main(int argc, char* argv[])
   consumerHelper1.SetAttribute("Filename", StringValue("names1.txt")); // file name for prefixes
   consumerHelper1.SetAttribute("Frequency", StringValue("20")); // 20 interests a second
   consumerHelper1.SetAttribute("WarmUpApp", BooleanValue(false));
+  consumerHelper1.SetAttribute("PrintStats", BooleanValue(false));
+  consumerHelper1.SetAttribute("AppLifeTime", StringValue("70s")); // app lifetime
   if (memLogs == 1)
     consumerHelper1.SetAttribute("MemoryLogs", BooleanValue(true));
   ApplicationContainer consumer1 = consumerHelper1.Install(Names::Find<Node>("Seattle"));
@@ -141,8 +143,9 @@ main(int argc, char* argv[])
   ndn::AppHelper consumerHelper3("ns3::ndn::ConsumerFuzzy");
   consumerHelper3.SetPrefix("/prefix/dog");
   consumerHelper3.SetAttribute("Frequency", StringValue("20")); // 20 interests a second
-  consumerHelper3.SetAttribute("Filename", StringValue("names1.txt")); // file name for prefixes
+  consumerHelper3.SetAttribute("Filename", StringValue("names2.txt")); // file name for prefixes
   consumerHelper3.SetAttribute("WarmUpApp", BooleanValue(false));
+  consumerHelper3.SetAttribute("AppLifeTime", StringValue("70s")); // app lifetime
   if (memLogs == 1)
     consumerHelper3.SetAttribute("MemoryLogs", BooleanValue(true));
   ApplicationContainer consumer3 = consumerHelper3.Install(Names::Find<Node>("Denver"));
@@ -161,6 +164,7 @@ main(int argc, char* argv[])
   consumerHelperWarmup1.SetPrefix("/prefix/dog");
   consumerHelperWarmup1.SetAttribute("Frequency", StringValue("30")); // 30 interests a second
   consumerHelperWarmup1.SetAttribute("Filename", StringValue("names-warmup1.txt")); // file name for prefixes
+  consumerHelperWarmup1.SetAttribute("AppLifeTime", StringValue("10s")); // app lifetime
   ApplicationContainer consumerWarmup1 = consumerHelperWarmup1.Install(Names::Find<Node>("Seattle"));
   consumerWarmup1.Stop(Seconds(10.0)); // stop consumers at 10s
   //
@@ -169,6 +173,7 @@ main(int argc, char* argv[])
   consumerHelperWarmup2.SetPrefix("/prefix/dog");
   consumerHelperWarmup2.SetAttribute("Frequency", StringValue("30")); // 30 interests a second
   consumerHelperWarmup2.SetAttribute("Filename", StringValue("names-warmup2.txt")); // file name for prefixes
+  consumerHelperWarmup2.SetAttribute("AppLifeTime", StringValue("10s")); // app lifetime
   ApplicationContainer consumerWarmup2 = consumerHelperWarmup2.Install(Names::Find<Node>("Sunnyvale"));
   consumerWarmup2.Stop(Seconds(10.0)); // stop consumers at 10s
 

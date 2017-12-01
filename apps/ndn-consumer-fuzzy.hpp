@@ -90,6 +90,8 @@ protected:
   int m_dataReceived;
   bool m_warmUpApp;
   bool m_memoryLogs;
+  bool m_printStats;
+  Time m_appLifeTime;
 };
 
 } // namespace ndn

@@ -70,6 +70,12 @@ ConsumerFuzzy::GetTypeId(void)
 
       .AddAttribute("MemoryLogs", "Is this app instance for cache warm-up?", BooleanValue(false),
                     MakeBooleanAccessor(&ConsumerFuzzy::m_memoryLogs), MakeBooleanChecker())
+
+      .AddAttribute("PrintStats", "Print out stats at the end?", BooleanValue(true),
+                    MakeBooleanAccessor(&ConsumerFuzzy::m_printStats), MakeBooleanChecker())
+
+      .AddAttribute("AppLifeTime", "Application LifeTime", StringValue("5s"),
+                    MakeTimeAccessor(&ConsumerFuzzy::m_appLifeTime), MakeTimeChecker())
     ;
 
   return tid;
@@ -120,7 +126,7 @@ ConsumerFuzzy::StartApplication() // Called at time specified by Start
 void
 ConsumerFuzzy::StopApplication() // Called at time specified by Stop
 {
-  if (!m_warmUpApp){
+  if (!m_warmUpApp && m_printStats){
     NS_LOG_UNCOND ("Interests sent: " << m_interestsSent);
     NS_LOG_UNCOND ("Data received: " << m_dataReceived);
   }
@@ -133,6 +139,11 @@ ConsumerFuzzy::ScheduleNextPacket()
   // double mean = 8.0 * m_payloadSize / m_desiredRate.GetBitRate ();
   // std::cout << "next: " << Simulator::Now().ToDouble(Time::S) + mean << "s\n";
   //m_random = 0;
+  // std::cerr << "Simulator Now: " << Simulator::Now().GetSeconds() << std::endl;
+  // std::cerr << "Lifetime: "  << m_appLifeTime.GetSeconds() << std::endl;
+  // if (Simulator::Now().GetSeconds() >= m_appLifeTime.GetSeconds() - 0.1)
+  //     return;
+
   if (m_firstTime) {
     m_sendEvent = Simulator::Schedule(Seconds(0.0), &Consumer::SendPacket, this,
                                       make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex])));
