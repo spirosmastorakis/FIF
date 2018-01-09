@@ -3,7 +3,10 @@
 
 #define NUM_OF_RESULTS 5
 #define COMP_INDEX_FUZZY 1
-#define THRESHOLD 0.4
+#define THRESHOLD 0.6
+#define CS_LOOKUPS 100
+#define TOTAL_BUDGET 300
+#define FIB_LOOKUPS 100
 
 struct result {
   char resultValue[100];

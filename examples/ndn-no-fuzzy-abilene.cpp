@@ -101,7 +101,8 @@ main(int argc, char* argv[])
   ndnHelper.InstallAll();
 
   // Choosing forwarding strategy
-  ndn::StrategyChoiceHelper::InstallAll("/prefix", "/localhost/nfd/strategy/best-route");
+  ndn::StrategyChoiceHelper::InstallAll("/prefix1", "/localhost/nfd/strategy/best-route");
+  ndn::StrategyChoiceHelper::InstallAll("/prefix2", "/localhost/nfd/strategy/best-route");
 
   // Installing global routing interface on all nodes
   ndn::GlobalRoutingHelper ndnGlobalRoutingHelper;
@@ -111,7 +112,7 @@ main(int argc, char* argv[])
 
   // First Consumer
   ndn::AppHelper consumerHelper1("ns3::ndn::ConsumerFuzzy");
-  consumerHelper1.SetPrefix("/prefix/dog");
+  consumerHelper1.SetPrefix("/prefix1");
   consumerHelper1.SetAttribute("Filename", StringValue("names1.txt")); // file name for prefixes
   consumerHelper1.SetAttribute("Frequency", StringValue("10")); // 10 interests a second
   consumerHelper1.SetAttribute("WarmUpApp", BooleanValue(false));
@@ -123,7 +124,7 @@ main(int argc, char* argv[])
 
   // Second Consumer
   ndn::AppHelper consumerHelper2("ns3::ndn::ConsumerFuzzy");
-  consumerHelper2.SetPrefix("/prefix/dog");
+  consumerHelper2.SetPrefix("/prefix2");
   consumerHelper2.SetAttribute("Frequency", StringValue("10")); // 10 interests a second
   consumerHelper2.SetAttribute("Filename", StringValue("names2.txt")); // file name for prefixes
   consumerHelper2.SetAttribute("WarmUpApp", BooleanValue(false)); // 10 interests a second
@@ -142,7 +143,7 @@ main(int argc, char* argv[])
 
   // Warming up caches along the data retrieval path
   ndn::AppHelper consumerHelperWarmup1("ns3::ndn::ConsumerFuzzy");
-  consumerHelperWarmup1.SetPrefix("/prefix/dog");
+  consumerHelperWarmup1.SetPrefix("/prefix1");
   consumerHelperWarmup1.SetAttribute("Frequency", StringValue("30")); // 30 interests a second
   consumerHelperWarmup1.SetAttribute("Filename", StringValue("names-warmup1.txt")); // file name for prefixes
   ApplicationContainer consumerWarmup1 = consumerHelperWarmup1.Install(Names::Find<Node>("Seattle"));
@@ -150,7 +151,7 @@ main(int argc, char* argv[])
 
   // Warming up caches along the data retrieval path
   ndn::AppHelper consumerHelperWarmup2("ns3::ndn::ConsumerFuzzy");
-  consumerHelperWarmup2.SetPrefix("/prefix/dog");
+  consumerHelperWarmup2.SetPrefix("/prefix2");
   consumerHelperWarmup2.SetAttribute("Frequency", StringValue("30")); // 30 interests a second
   consumerHelperWarmup2.SetAttribute("Filename", StringValue("names-warmup2.txt")); // file name for prefixes
   ApplicationContainer consumerWarmup2 = consumerHelperWarmup2.Install(Names::Find<Node>("Houston"));
@@ -158,7 +159,7 @@ main(int argc, char* argv[])
 
   // Warming up caches along the data retrieval path
   ndn::AppHelper consumerHelperWarmup3("ns3::ndn::ConsumerFuzzy");
-  consumerHelperWarmup3.SetPrefix("/prefix/dog");
+  consumerHelperWarmup3.SetPrefix("/prefix1");
   consumerHelperWarmup3.SetAttribute("Frequency", StringValue("30")); // 30 interests a second
   consumerHelperWarmup3.SetAttribute("Filename", StringValue("names-warmup3.txt")); // file name for prefixes
   ApplicationContainer consumerWarmup3 = consumerHelperWarmup3.Install(Names::Find<Node>("Sunnyvale"));
@@ -166,15 +167,18 @@ main(int argc, char* argv[])
 
   // Warming up caches along the data retrieval path
   ndn::AppHelper consumerHelperWarmup4("ns3::ndn::ConsumerFuzzy");
-  consumerHelperWarmup4.SetPrefix("/prefix/dog");
+  consumerHelperWarmup4.SetPrefix("/prefix2");
   consumerHelperWarmup4.SetAttribute("Frequency", StringValue("30")); // 30 interests a second
   consumerHelperWarmup4.SetAttribute("Filename", StringValue("names-warmup4.txt")); // file name for prefixes
   ApplicationContainer consumerWarmup4 = consumerHelperWarmup3.Install(Names::Find<Node>("Atlanta"));
   consumerWarmup4.Stop(Seconds(10)); // stop consumers at 10s
 
   // Add /prefix origins to ndn::GlobalRouter
-  for (int i = 0; i < fibSize; i++)
-    ndnGlobalRoutingHelper.AddOrigins(string("/prefix/") + random_words_routing[i], Names::Find<Node>("New-York"));
+  int j = 0;
+  for (; j < fibSize / 2; j++)
+    ndnGlobalRoutingHelper.AddOrigins(string("/prefix1/") + random_words_routing[j], Names::Find<Node>("New-York"));
+  for (; j < fibSize; j++)
+    ndnGlobalRoutingHelper.AddOrigins(string("/prefix2/") + random_words_routing[j], Names::Find<Node>("New-York"));
   // ndnGlobalRoutingHelper.AddOrigins("/prefix/", nodes.Get(2));
 
   // Calculate and install FIBs

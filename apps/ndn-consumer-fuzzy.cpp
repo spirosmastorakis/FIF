@@ -146,13 +146,13 @@ ConsumerFuzzy::ScheduleNextPacket()
 
   if (m_firstTime) {
     m_sendEvent = Simulator::Schedule(Seconds(0.0), &Consumer::SendPacket, this,
-                                      make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex])));
+                                      make_shared<Name>(m_interestName.toUri() + "/" + m_random_words_names[m_nameIndex]));
     m_firstTime = false;
   }
   else if (!m_sendEvent.IsRunning())
     m_sendEvent = Simulator::Schedule(Seconds(1.0 / m_frequency),
                                       &Consumer::SendPacket, this,
-                                      make_shared<Name>(Name(std::string("/prefix/") + m_random_words_names[m_nameIndex])));
+                                      make_shared<Name>(m_interestName.toUri() + "/" + m_random_words_names[m_nameIndex]));
   m_nameIndex++;
   m_interestsSent++;
 }
@@ -185,6 +185,7 @@ ConsumerFuzzy::GetRandomize() const
 void
 ConsumerFuzzy::OnData(shared_ptr<const Data> data)
 {
+  NS_LOG_INFO("> Data for " << data->getName());
   double overhead = MemUsage::Get() / 1024.0 / 1024.0;
   if (m_memoryLogs)
     std::cerr << "Memory overhead: " << overhead << " MB" << std::endl;

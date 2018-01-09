@@ -95,6 +95,17 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
 {
   App::OnInterest(interest); // tracing inside
 
+  if (ns3::Simulator::Now().GetSeconds() >= 10) {
+    char word1[100];
+    char word2[100];
+    strcpy(word2, interest->getName().get(1).toUri().c_str());
+    if (!interest->getForwardingHint().empty())
+      strcpy(word1, interest->getForwardingHint()[0].name.get(1).toUri().c_str());
+    else
+      strcpy(word1, interest->getName().get(1).toUri().c_str());
+    std::cerr << word2 << " " << word1 << std::endl;
+  }
+
   NS_LOG_FUNCTION(this << interest);
 
   if (!m_active)

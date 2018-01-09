@@ -91,14 +91,14 @@ Consumer::Consumer()
 void
 Consumer::SetRetxTimer(Time retxTimer)
 {
-  m_retxTimer = retxTimer;
-  if (m_retxEvent.IsRunning()) {
-    // m_retxEvent.Cancel (); // cancel any scheduled cleanup events
-    Simulator::Remove(m_retxEvent); // slower, but better for memory
-  }
-
-  // schedule even with new timeout
-  m_retxEvent = Simulator::Schedule(m_retxTimer, &Consumer::CheckRetxTimeout, this);
+  // m_retxTimer = retxTimer;
+  // if (m_retxEvent.IsRunning()) {
+  //   // m_retxEvent.Cancel (); // cancel any scheduled cleanup events
+  //   Simulator::Remove(m_retxEvent); // slower, but better for memory
+  // }
+  //
+  // // schedule even with new timeout
+  // m_retxEvent = Simulator::Schedule(m_retxTimer, &Consumer::CheckRetxTimeout, this);
 }
 
 Time

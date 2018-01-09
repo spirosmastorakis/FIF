@@ -1,29 +1,32 @@
-ndnSIM
-======
+# FIF-ndnSIM
 
-[![Build Status](https://travis-ci.org/named-data-ndnSIM/ndnSIM.svg)](https://travis-ci.org/named-data-ndnSIM/ndnSIM)
+This is a modified version of ndnSIM for the simulation of Fuzzy Interest
+Forwarding (FIF).
 
-A new release of [NS-3 based Named Data Networking (NDN) simulator](http://ndnsim.net/)
-went through extensive refactoring and rewriting.  The key new features of the new
-version:
+To build this version of ndnSIM:
 
-- Packet format changed to [NDN Packet Specification](http://named-data.net/doc/ndn-tlv/)
+```
+mkdir ndnSIM
+cd ndnSIM
+git clone https://github.com/spirosmastorakis/ns3-dev-FIF ns-3
+git clone https://github.com/named-data-ndnSIM/pybindgen.git pybindgen
+git clone https://github.com/spirosmastorakis/word2vec
+git clone --recursive https://github.com/spirosmastorakis/FIF ns-3/src/ndnSIM
+```
 
-- ndnSIM uses implementation of basic NDN primitives from
-  [ndn-cxx library (NDN C++ library with eXperimental eXtensions)](http://named-data.net/doc/ndn-cxx/)
+To run the simulations presented in the paper:
 
-  Based on version `0.4.1`
+1) Compile the `extract_words.cpp` and `extract_words_overlap.cpp` source code  
+located under the ns-3 directory:
 
-- All NDN forwarding and management is implemented directly using source code of
-  [Named Data Networking Forwarding Daemon (NFD)](http://named-data.net/doc/NFD/)
+```
+g++ -ldistance extract_words.cpp -o extract_words
+g++ -ldistance extract_words_overlap.cpp -o extract_words_overlap
+```
 
-  Based on version `0.4.1-1-g704430c`
+2) Run the `extract_words_overlap.sh` (for the evaluation of the
+Forward or Wait Challenge) and `extract_words.sh` (for all the other experiments)
+scripts located under the ns-3 directory with the appropriate parameters.
 
-- Allows [simulation of real applications](http://ndnsim.net/guide-to-simulate-real-apps.html)
-  written against ndn-cxx library
-
-[ndnSIM documentation](http://ndnsim.net)
----------------------------------------------
-
-For more information, including downloading and compilation instruction, please refer to
-http://ndnsim.net or documentation in `docs/` folder.
+Take a look at `extract_words.cpp` and `extract_words_overlap.cpp` for usage
+information.

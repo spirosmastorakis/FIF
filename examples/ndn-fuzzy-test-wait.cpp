@@ -58,9 +58,9 @@ main(int argc, char* argv[])
   // Read optional command-line parameters (e.g., enable visualizer with ./waf --run=<> --visualize
   CommandLine cmd;
   int fibSize = 600;
-  int simTime = 40;
+  int simTime = 70;
   int memLogs = 0;
-  float waitTime = 0.3;
+  float waitTime = 0.6;
   cmd.AddValue("fibSize", "Number of random FIB entries", fibSize);
   cmd.AddValue("simTime", "Simulation Time", simTime);
   cmd.AddValue("memLogs", "Memory Logs On", memLogs);
@@ -115,7 +115,7 @@ main(int argc, char* argv[])
 
   // First Consumer
   ndn::AppHelper consumerHelper1("ns3::ndn::ConsumerFuzzy");
-  consumerHelper1.SetPrefix("/prefix/dog");
+  consumerHelper1.SetPrefix("/prefix");
   consumerHelper1.SetAttribute("Filename", StringValue("names1.txt")); // file name for prefixes
   consumerHelper1.SetAttribute("Frequency", StringValue("20")); // 20 interests a second
   consumerHelper1.SetAttribute("WarmUpApp", BooleanValue(false));
@@ -141,7 +141,7 @@ main(int argc, char* argv[])
 
   // Third Consumer
   ndn::AppHelper consumerHelper3("ns3::ndn::ConsumerFuzzy");
-  consumerHelper3.SetPrefix("/prefix/dog");
+  consumerHelper3.SetPrefix("/prefix");
   consumerHelper3.SetAttribute("Frequency", StringValue("20")); // 20 interests a second
   consumerHelper3.SetAttribute("Filename", StringValue("names2.txt")); // file name for prefixes
   consumerHelper3.SetAttribute("WarmUpApp", BooleanValue(false));
@@ -161,7 +161,7 @@ main(int argc, char* argv[])
 
   // Warming up caches along the data retrieval path
   ndn::AppHelper consumerHelperWarmup1("ns3::ndn::ConsumerFuzzy");
-  consumerHelperWarmup1.SetPrefix("/prefix/dog");
+  consumerHelperWarmup1.SetPrefix("/prefix");
   consumerHelperWarmup1.SetAttribute("Frequency", StringValue("30")); // 30 interests a second
   consumerHelperWarmup1.SetAttribute("Filename", StringValue("names-warmup1.txt")); // file name for prefixes
   consumerHelperWarmup1.SetAttribute("AppLifeTime", StringValue("10s")); // app lifetime
@@ -170,7 +170,7 @@ main(int argc, char* argv[])
   //
   // // Warming up caches along the data retrieval path
   ndn::AppHelper consumerHelperWarmup2("ns3::ndn::ConsumerFuzzy");
-  consumerHelperWarmup2.SetPrefix("/prefix/dog");
+  consumerHelperWarmup2.SetPrefix("/prefix");
   consumerHelperWarmup2.SetAttribute("Frequency", StringValue("30")); // 30 interests a second
   consumerHelperWarmup2.SetAttribute("Filename", StringValue("names-warmup2.txt")); // file name for prefixes
   consumerHelperWarmup2.SetAttribute("AppLifeTime", StringValue("10s")); // app lifetime
